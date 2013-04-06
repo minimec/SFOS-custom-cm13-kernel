@@ -335,19 +335,18 @@ static int hidp_send_report(struct hidp_session *session, struct hid_report *rep
 static int hidp_output_raw_report(struct hid_device *hid, unsigned char *data, size_t count,
 		unsigned char report_type)
 {
-	switch (report_type) {
-	case HID_FEATURE_REPORT:
-		report_type = HIDP_TRANS_SET_REPORT | HIDP_DATA_RTYPE_FEATURE;
-		break;
-	case HID_OUTPUT_REPORT:
+	struct hidp_session *session = hid->driver_data;
+
+	if (report_type == HID_OUTPUT_REPORT) {
 		report_type = HIDP_TRANS_DATA | HIDP_DATA_RTYPE_OUPUT;
-		break;
-	default:
+		return hidp_send_intr_message(session, report_type,
+					      data, count);
+	} else if (report_type != HID_FEATURE_REPORT) {
 		return -EINVAL;
 	}
 
-	if (hidp_send_ctrl_message(hid->driver_data, report_type,
-			data, count))
+	report_type = HIDP_TRANS_SET_REPORT | HIDP_DATA_RTYPE_FEATURE;
+	if (hidp_send_ctrl_message(session, report_type, data, count))
 		return -ENOMEM;
 	return count;
 }
