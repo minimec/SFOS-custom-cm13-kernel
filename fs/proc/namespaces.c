@@ -25,9 +25,9 @@ static const struct proc_ns_operations *ns_entries[] = {
 	&ipcns_operations,
 #endif
 #ifdef CONFIG_PID_NS
-	&pidns_operations,
+  	&pidns_operations,
 #endif
-	&mntns_operations,
+  	&mntns_operations,
 };
 
 static const struct file_operations ns_file_operations = {
