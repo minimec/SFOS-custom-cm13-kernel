@@ -812,6 +812,8 @@ static int hci_sock_dev_event(struct notifier_block *this, unsigned long event, 
 {
 	struct hci_dev *hdev = (struct hci_dev *) ptr;
 	struct hci_ev_si_device ev;
+	
+	bluesleep_hci_event(event);
 
 	BT_DBG("hdev %s event %ld", hdev->name, event);
 
